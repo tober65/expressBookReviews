@@ -7,7 +7,26 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  if(!req.body.username) {
+    return res.status(400).json({message: "Username is required in HTML body"});
+  }
+  
+  if (!req.body.password) {
+    return res.status(400).json({message: "Password is required in HTML body"});
+  }
+  if (  !isValid(req.body.username)) {
+    return res.status(400).json({message: "Username is invalid"});
+  }
+
+    
+  users.push(
+    {
+        username: req.body.username,
+        password: req.body.password
+    }
+);
+
+  return res.status(200).json({message: "Customer successfully registered. Now you can login."});
 });
 
 // Get the book list available in the shop
@@ -37,13 +56,19 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let matchingBooks = [];
+  Object.keys(books).forEach(key => {
+    if (books[key].title == req.params.title) {
+        matchingBooks.push(books[key]);
+    }
+  });
+  return res.status(200).send(JSON.stringify(matchingBooks, null, " "));
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(200).send(JSON.stringify(books[req.params.isbn].reviews, null, " "));
 });
 
 module.exports.general = public_users;
